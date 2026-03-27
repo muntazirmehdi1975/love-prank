@@ -6,6 +6,8 @@ function LoveQuestion() {
   const [accepted, setAccepted] = useState(false);
   const [noCount, setNoCount] = useState(0);
   const [showMeme, setShowMeme] = useState(false);
+  const [flowers, setFlowers] = useState([]);
+  const [balloons, setBalloons] = useState([]);
 
   // Music — starts on first click
   useEffect(() => {
@@ -45,6 +47,36 @@ function LoveQuestion() {
     }, 30);
   }, []);
 
+  // Hearts data
+  const hearts = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    left: Math.random() * 100,
+    duration: Math.random() * 4 + 3,
+    delay: Math.random() * 5,
+    size: Math.random() * 20 + 15,
+    emoji: ["❤️", "💕", "💖", "💗", "💓", "💝"][Math.floor(Math.random() * 6)]
+  }));
+
+  const handleYes = () => {
+    setAccepted(true);
+
+    const newFlowers = Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      delay: Math.random() * 2,
+      emoji: ["🌸", "🌺", "🌹", "🌷", "💐"][Math.floor(Math.random() * 5)]
+    }));
+    setFlowers(newFlowers);
+
+    const newBalloons = Array.from({ length: 15 }, (_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      delay: Math.random() * 2,
+      emoji: ["🎈", "🎀", "💝", "🎊", "🎉"][Math.floor(Math.random() * 5)]
+    }));
+    setBalloons(newBalloons);
+  };
+
   const moveNoButton = (e) => {
     const newCount = noCount + 1;
     setNoCount(newCount);
@@ -67,7 +99,6 @@ function LoveQuestion() {
       <div style={{
         height: "100vh",
         display: "flex",
-        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         background: "linear-gradient(135deg,#ff9a9e,#fad0c4)"
@@ -84,10 +115,76 @@ function LoveQuestion() {
   // Accepted screen
   if (accepted) {
     return (
-      <div style={styles.accepted}>
-        <h1>GOOD GIRL </h1>
-        <p>Jonam… you just made my day 💕</p>
-        <h2>I like you more than words can explain ✨</h2>
+      <div style={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "linear-gradient(135deg,#ff758c,#ff7eb3)",
+        color: "white",
+        textAlign: "center",
+        overflow: "hidden",
+        position: "relative"
+      }}>
+
+        {/* Falling Flowers */}
+        {flowers.map(f => (
+          <motion.div
+            key={f.id}
+            initial={{ y: -100, x: `${f.left}vw`, opacity: 1 }}
+            animate={{ y: "110vh", opacity: 0 }}
+            transition={{ duration: 4, delay: f.delay, repeat: Infinity }}
+            style={{ position: "absolute", fontSize: "30px", top: 0 }}
+          >
+            {f.emoji}
+          </motion.div>
+        ))}
+
+        {/* Floating Balloons */}
+        {balloons.map(b => (
+          <motion.div
+            key={b.id}
+            initial={{ y: "110vh", x: `${b.left}vw`, opacity: 1 }}
+            animate={{ y: -100, opacity: 0 }}
+            transition={{ duration: 4, delay: b.delay, repeat: Infinity }}
+            style={{ position: "absolute", fontSize: "35px", bottom: 0 }}
+          >
+            {b.emoji}
+          </motion.div>
+        ))}
+
+        {/* Cat with flowers */}
+        <motion.img
+          src="/cat.jpg"
+          alt="cat"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.8, type: "spring" }}
+          style={{
+            width: "200px",
+            borderRadius: "50%",
+            border: "5px solid white",
+            marginBottom: "20px",
+            zIndex: 1
+          }}
+        />
+
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          style={{ zIndex: 1 }}
+        >
+          <h1 style={{ fontSize: "45px" }}>GOOD GIRL ❤️</h1>
+          <p style={{ fontSize: "22px", marginTop: "10px" }}>
+            My beautiful Jonam… you just made my day 💕
+          </p>
+          <h2 style={{ marginTop: "15px" }}>
+            I like you more than words can explain ✨
+          </h2>
+        </motion.div>
+
       </div>
     );
   }
@@ -95,22 +192,43 @@ function LoveQuestion() {
   return (
     <div style={styles.container}>
 
-      <div className="hearts">❤️ ❤️ ❤️ ❤️ ❤️</div>
+      {/* 20 Floating Hearts */}
+      {hearts.map(h => (
+        <motion.div
+          key={h.id}
+          initial={{ y: "100vh", x: `${h.left}vw`, opacity: 1, scale: 1 }}
+          animate={{ y: "-10vh", opacity: 0 }}
+          transition={{
+            duration: h.duration,
+            delay: h.delay,
+            repeat: Infinity,
+            repeatDelay: Math.random() * 3
+          }}
+          style={{
+            position: "absolute",
+            fontSize: `${h.size}px`,
+            pointerEvents: "none",
+            zIndex: 0
+          }}
+        >
+          {h.emoji}
+        </motion.div>
+      ))}
 
       <motion.h1
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ duration: 1 }}
+        style={{ zIndex: 1 }}
       >
         Jonam… Do you like me? ❤️
       </motion.h1>
 
-      {/* YES and NO right below title */}
-      <div style={{ marginTop: "20px", marginBottom: "30px" }}>
+      <div style={{ marginTop: "20px", marginBottom: "30px", zIndex: 1 }}>
         <motion.button
           whileHover={{ scale: 1.2 }}
           style={styles.yes}
-          onClick={() => setAccepted(true)}
+          onClick={handleYes}
         >
           Yes 💖
         </motion.button>
@@ -123,13 +241,11 @@ function LoveQuestion() {
         </button>
       </div>
 
-      {/* Typing message */}
-      <p style={{ maxWidth: "500px", fontSize: "18px", color: "#7a0030", marginTop: "10px" }}>
+      <p style={{ maxWidth: "500px", fontSize: "18px", color: "#7a0030", marginTop: "10px", zIndex: 1 }}>
         {text}
       </p>
 
-      {/* Love meter */}
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: "20px", zIndex: 1 }}>
         <h3 style={{ color: "#b5004e" }}>My Love For You</h3>
         <div style={{
           width: "250px", height: "20px", background: "#fff",
@@ -156,17 +272,8 @@ const styles = {
     alignItems: "center",
     background: "linear-gradient(135deg,#ff9a9e,#fad0c4)",
     textAlign: "center",
-    overflow: "hidden"
-  },
-  accepted: {
-    height: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "linear-gradient(135deg,#ff758c,#ff7eb3)",
-    color: "white",
-    textAlign: "center"
+    overflow: "hidden",
+    position: "relative"
   },
   yes: {
     padding: "14px 30px",
