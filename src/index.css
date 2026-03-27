@@ -1,0 +1,11 @@
+.hearts{
+  position:absolute;
+  top:20px;
+  font-size:30px;
+  animation: float 6s infinite linear;
+}
+
+@keyframes float{
+  0%{transform:translateY(0);}
+  100%{transform:translateY(-800px);}
+}
